@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>A Place to Be Heard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="hero">
+        <div class="sparkle">✦</div>
+        <h1>♡ A PLACE TO BE HEARD ♡</h1>
+        <p>Write what you feel. Share what you want. Keep a little piece of the moment.</p>
+    </header>
+
+    <main>
+        <section class="composer">
+            <form action="{{ url_for('create_post') }}" method="post" enctype="multipart/form-data">
+                <textarea name="body" placeholder="Write anything... your thoughts, feelings, memories, a letter you never sent, or simply how your day went." maxlength="5000"></textarea>
+
+                <div class="identity">
+                    <label for="name">Your name</label>
+                    <input id="name" name="name" type="text" maxlength="80" placeholder="Optional name">
+
+                    <label class="check">
+                        <input id="anonymous" name="anonymous" type="checkbox">
+                        <span>Post anonymously</span>
+                    </label>
+                </div>
+
+                <div class="upload-row">
+                    <label class="upload-button">
+                        🖼️ Add pictures
+                        <input id="images" name="images" type="file" accept="image/png,image/jpeg,image/gif,image/webp" multiple>
+                    </label>
+                    <span id="file-count">No pictures selected</span>
+                </div>
+
+                <div id="preview" class="preview"></div>
+
+                <button class="post-button" type="submit">♡ POST TO THE MEMORY WALL ♡</button>
+            </form>
+        </section>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="alerts">
+                {% for category, message in messages %}
+                    <div class="alert {{ category }}">{{ message }}</div>
+                {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <section class="wall">
+            <div class="wall-title">
+                <h2>♡ MEMORY WALL ♡</h2>
+                <p>Every story deserves a place.</p>
+            </div>
+
+            {% if not posts %}
+                <div class="empty">Be the first person to leave a little piece of yourself here. ♡</div>
+            {% endif %}
+
+            {% for post in posts %}
+            <article class="card">
+                <div class="author">♡ {{ post.author }}</div>
+                <div class="date">{{ post.created_at.replace("T", " ") }} UTC</div>
+
+                {% if post.body %}
+                    <div class="body">{{ post.body }}</div>
+                {% endif %}
+
+                {% if post.images %}
+                <div class="gallery">
+                    {% for image in post.images %}
+                        <img src="{{ url_for('uploaded_file', filename=image) }}" alt="Picture shared with this memory">
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </article>
+            {% endfor %}
+        </section>
+    </main>
+
+    <footer>
+        Your story matters, whether you sign it or not. ♡
+    </footer>
+
+    <script>
+        const input = document.getElementById("images");
+        const count = document.getElementById("file-count");
+        const preview = document.getElementById("preview");
+        const anonymous = document.getElementById("anonymous");
+        const name = document.getElementById("name");
+
+        input.addEventListener("change", () => {
+            const files = Array.from(input.files);
+            count.textContent = files.length
+                ? `${files.length} picture${files.length > 1 ? "s" : ""} selected ♡`
+                : "No pictures selected";
+
+            preview.innerHTML = "";
+            files.slice(0, 5).forEach(file => {
+                const img = document.createElement("img");
+                img.src = URL.createObjectURL(file);
+                img.alt = "Preview";
+                preview.appendChild(img);
+            });
+        });
+
+        anonymous.addEventListener("change", () => {
+            name.disabled = anonymous.checked;
+            if (anonymous.checked) name.value = "";
+        });
+    </script>
+</body>
+</html>

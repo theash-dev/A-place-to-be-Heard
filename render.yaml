@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: a-place-to-be-heard
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
