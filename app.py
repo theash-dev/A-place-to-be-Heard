@@ -176,6 +176,34 @@ def admin_dashboard():
     conn.close()
 
     return render_template("admin.html", posts=result)
+    
+    @app.route("/admin/delete/<int:post_id>", methods=["POST"])
+def delete_post(post_id):
+    if not session.get("admin_logged_in"):
+        return redirect(url_for("admin_login"))
+
+    conn = db()
+
+    images = conn.execute(
+        "SELECT filename FROM images WHERE post_id = ?",
+        (post_id,)
+    ).fetchall()
+
+    for image in images:
+        file_path = os.path.join(UPLOAD_FOLDER, image["filename"])
+
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
+    conn.execute("DELETE FROM images WHERE post_id = ?", (post_id,))
+    conn.execute("DELETE FROM posts WHERE id = ?", (post_id,))
+
+    conn.commit()
+    conn.close()
+
+    flash("Post deleted successfully.", "success")
+
+    return redirect(url_for("admin_dashboard"))
 
 from flask import session
 @app.route("/uploads/<path:filename>")
