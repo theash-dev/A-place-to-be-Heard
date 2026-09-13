@@ -2,7 +2,7 @@ import os
 import sqlite3
 import uuid
 from datetime import datetime, timezone
-from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory
+from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory, session
 from werkzeug.utils import secure_filename
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -13,7 +13,12 @@ MAX_FILE_SIZE = 8 * 1024 * 1024  # 8 MB per image
 MAX_IMAGES = 5
 
 app = Flask(__name__)
+
 app.secret_key = os.environ.get("SECRET_KEY", "change-this-secret-key")
+
+ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "admin")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "admin123")
+
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["MAX_CONTENT_LENGTH"] = MAX_FILE_SIZE * MAX_IMAGES + 1024 * 1024
 
@@ -118,7 +123,61 @@ def create_post():
 
     flash("Your memory has been shared. ♡", "success")
     return redirect(url_for("index"))
+@app.route("/admin/login", methods=["GET", "POST"])
+def admin_login():
+    if request.method == "POST":
+        username = request.form.get("username", "")
+        password = request.form.get("password", "")
 
+        if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
+            session["admin_logged_in"] = True
+            return redirect(url_for("admin_dashboard"))
+
+        flash("Incorrect username or password.", "error")
+
+    return render_template("admin_login.html")
+
+
+@app.route("/admin/logout")
+def admin_logout():
+    session.pop("admin_logged_in", None)
+    return redirect(url_for("admin_login"))
+
+
+@app.route("/admin")
+def admin_dashboard():
+    if not session.get("admin_logged_in"):
+        return redirect(url_for("admin_login"))
+
+    conn = db()
+
+    posts = conn.execute("""
+        SELECT id, author, body, created_at
+        FROM posts
+        ORDER BY id DESC
+    """).fetchall()
+
+    result = []
+
+    for post in posts:
+        images = conn.execute(
+            "SELECT filename FROM images WHERE post_id = ? ORDER BY id",
+            (post["id"],)
+        ).fetchall()
+
+        result.append({
+            "id": post["id"],
+            "author": post["author"],
+            "body": post["body"],
+            "created_at": post["created_at"],
+            "images": [x["filename"] for x in images]
+        })
+
+    conn.close()
+
+    return render_template("admin.html", posts=result)
+
+from flask import session
 @app.route("/uploads/<path:filename>")
 def uploaded_file(filename):
     return send_from_directory(UPLOAD_FOLDER, filename)
