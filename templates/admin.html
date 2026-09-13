@@ -64,6 +64,30 @@
             white-space: pre-wrap;
         }
 
+        .status {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .pending {
+            background: #fff1c9;
+            color: #9a7b24;
+        }
+
+        .approved {
+            background: #dff5df;
+            color: #4c8b4c;
+        }
+
+        .hidden {
+            background: #f5dede;
+            color: #a05a5a;
+        }
+
         .images {
             display: flex;
             flex-wrap: wrap;
@@ -78,25 +102,39 @@
             border-radius: 12px;
         }
 
+        .actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .button {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .approve {
+            background: #8fcf9b;
+        }
+
+        .hide {
+            background: #d99aae;
+        }
+
+        .delete {
+            background: #c98282;
+        }
+
         .empty {
             text-align: center;
             color: #999;
             padding: 40px;
         }
-        .delete-button {
-    margin-top: 15px;
-    padding: 10px 18px;
-    border: none;
-    border-radius: 10px;
-    background: #e9a0b4;
-    color: white;
-    font-size: 14px;
-    cursor: pointer;
-}
-
-.delete-button:hover {
-    background: #d8879e;
-}
     </style>
 </head>
 
@@ -131,15 +169,43 @@
                 {{ post.body }}
             </div>
 
-            <form method="POST"
-      action="{{ url_for('delete_post', post_id=post.id) }}"
-      onsubmit="return confirm('Are you sure you want to delete this post?');">
+            <!-- STATUS -->
+            <div class="status {{ post.status }}">
+                {{ post.status|capitalize }}
+            </div>
 
-    <button type="submit" class="delete-button">
-        🗑️ Delete Post
-    </button>
+            <!-- ACTION BUTTONS -->
+            <div class="actions">
 
-</form>
+                {% if post.status != "approved" %}
+                <form method="POST"
+                      action="{{ url_for('approve_post', post_id=post.id) }}">
+                    <button type="submit" class="button approve">
+                        ✓ Approve
+                    </button>
+                </form>
+                {% endif %}
+
+                {% if post.status != "hidden" %}
+                <form method="POST"
+                      action="{{ url_for('hide_post', post_id=post.id) }}">
+                    <button type="submit" class="button hide">
+                        ♡ Hide
+                    </button>
+                </form>
+                {% endif %}
+
+                <form method="POST"
+                      action="{{ url_for('delete_post', post_id=post.id) }}"
+                      onsubmit="return confirm('Are you sure you want to delete this post?');">
+
+                    <button type="submit" class="button delete">
+                        🗑️ Delete
+                    </button>
+
+                </form>
+
+            </div>
 
             {% if post.images %}
             <div class="images">
