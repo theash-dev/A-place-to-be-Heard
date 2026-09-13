@@ -1,141 +1,194 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - A Place to Be Heard</title>
 
-    <style>
-        body {
-            margin: 0;
-            background: #fff0f5;
-            font-family: Arial, sans-serif;
-            color: #555;
-        }
+```
+<style>
+    body {
+        margin: 0;
+        background: #fff0f5;
+        font-family: Arial, sans-serif;
+        color: #555;
+    }
 
-        header {
-            background: #d99aae;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
+    header {
+        background: #d99aae;
+        color: white;
+        padding: 20px;
+        text-align: center;
+    }
 
-        header h1 {
-            margin: 0;
-        }
+    header h1 {
+        margin: 0;
+    }
 
-        .logout {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 8px 15px;
-            background: white;
-            color: #bd7891;
-            text-decoration: none;
-            border-radius: 10px;
-        }
+    .logout {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 8px 15px;
+        background: white;
+        color: #bd7891;
+        text-decoration: none;
+        border-radius: 10px;
+    }
 
-        .container {
-            max-width: 900px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
+    .container {
+        max-width: 900px;
+        margin: 30px auto;
+        padding: 0 20px;
+    }
 
-        .post {
-            background: white;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 20px;
-            box-shadow: 0 5px 20px rgba(180, 120, 145, 0.15);
-        }
+    /* COUNTS */
+    .counts {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-bottom: 25px;
+    }
 
-        .author {
-            font-weight: bold;
-            color: #bd7891;
-        }
+    .count-box {
+        flex: 1;
+        min-width: 150px;
+        background: white;
+        padding: 18px;
+        border-radius: 18px;
+        text-align: center;
+        box-shadow: 0 5px 20px rgba(180, 120, 145, 0.15);
+    }
 
-        .date {
-            font-size: 13px;
-            color: #999;
-            margin-top: 5px;
-        }
+    .count-number {
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
 
-        .body {
-            margin-top: 15px;
-            white-space: pre-wrap;
-        }
+    .count-label {
+        font-size: 14px;
+    }
 
-        .status {
-            display: inline-block;
-            margin-top: 12px;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: bold;
-        }
+    .pending-count {
+        color: #9a7b24;
+    }
 
-        .pending {
-            background: #fff1c9;
-            color: #9a7b24;
-        }
+    .approved-count {
+        color: #4c8b4c;
+    }
 
-        .approved {
-            background: #dff5df;
-            color: #4c8b4c;
-        }
+    .hidden-count {
+        color: #a05a5a;
+    }
 
-        .hidden {
-            background: #f5dede;
-            color: #a05a5a;
-        }
+    /* POST */
+    .post {
+        background: white;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 20px;
+        box-shadow: 0 5px 20px rgba(180, 120, 145, 0.15);
+    }
 
-        .images {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 15px;
-        }
+    .author {
+        font-weight: bold;
+        color: #bd7891;
+    }
 
-        .images img {
-            width: 150px;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 12px;
-        }
+    .date {
+        font-size: 13px;
+        color: #999;
+        margin-top: 5px;
+    }
 
-        .actions {
-            margin-top: 15px;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
+    .body {
+        margin-top: 15px;
+        white-space: pre-wrap;
+    }
 
-        .button {
-            padding: 10px 18px;
-            border: none;
-            border-radius: 10px;
-            color: white;
-            font-size: 14px;
-            cursor: pointer;
-        }
+    /* STATUS */
+    .status {
+        display: inline-block;
+        margin-top: 12px;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: bold;
+    }
 
-        .approve {
-            background: #8fcf9b;
-        }
+    .pending {
+        background: #fff1c9;
+        color: #9a7b24;
+    }
 
-        .hide {
-            background: #d99aae;
-        }
+    .approved {
+        background: #dff5df;
+        color: #4c8b4c;
+    }
 
-        .delete {
-            background: #c98282;
-        }
+    .hidden {
+        background: #f5dede;
+        color: #a05a5a;
+    }
 
-        .empty {
-            text-align: center;
-            color: #999;
-            padding: 40px;
-        }
-    </style>
+    /* BUTTONS */
+    .actions {
+        margin-top: 15px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .button {
+        padding: 10px 18px;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    .approve {
+        background: #8fcf9b;
+    }
+
+    .hide {
+        background: #d99aae;
+    }
+
+    .delete {
+        background: #c98282;
+    }
+
+    /* IMAGES */
+    .images {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .images img {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 12px;
+    }
+
+    .empty {
+        text-align: center;
+        color: #999;
+        padding: 40px;
+    }
+
+    .section-title {
+        color: #bd7891;
+        margin-bottom: 15px;
+    }
+</style>
+```
+
 </head>
 
 <body>
@@ -144,91 +197,160 @@
     <h1>♡ Admin Dashboard ♡</h1>
     <p>A Place to Be Heard</p>
 
-    <a class="logout" href="{{ url_for('admin_logout') }}">
-        Log Out
-    </a>
+```
+<a class="logout" href="{{ url_for('admin_logout') }}">
+    Log Out
+</a>
+```
+
 </header>
 
 <div class="container">
 
-    {% if posts %}
+```
+<!-- POST COUNTS -->
 
-        {% for post in posts %}
+<div class="counts">
 
-        <div class="post">
+    <div class="count-box">
+        <div class="count-number pending-count">
+            {{ posts | selectattr("status", "equalto", "pending") | list | length }}
+        </div>
+        <div class="count-label">
+            🟡 Pending
+        </div>
+    </div>
 
-            <div class="author">
-                {{ post.author }}
-            </div>
+    <div class="count-box">
+        <div class="count-number approved-count">
+            {{ posts | selectattr("status", "equalto", "approved") | list | length }}
+        </div>
+        <div class="count-label">
+            🟢 Approved
+        </div>
+    </div>
 
-            <div class="date">
-                {{ post.created_at }}
-            </div>
+    <div class="count-box">
+        <div class="count-number hidden-count">
+            {{ posts | selectattr("status", "equalto", "hidden") | list | length }}
+        </div>
+        <div class="count-label">
+            🔴 Hidden
+        </div>
+    </div>
 
-            <div class="body">
-                {{ post.body }}
-            </div>
+</div>
 
-            <!-- STATUS -->
-            <div class="status {{ post.status }}">
-                {{ post.status|capitalize }}
-            </div>
 
-            <!-- ACTION BUTTONS -->
-            <div class="actions">
+{% if posts %}
 
-                {% if post.status != "approved" %}
-                <form method="POST"
-                      action="{{ url_for('approve_post', post_id=post.id) }}">
-                    <button type="submit" class="button approve">
-                        ✓ Approve
-                    </button>
-                </form>
-                {% endif %}
+    <h2 class="section-title">
+        All Submitted Posts ♡
+    </h2>
 
-                {% if post.status != "hidden" %}
-                <form method="POST"
-                      action="{{ url_for('hide_post', post_id=post.id) }}">
-                    <button type="submit" class="button hide">
-                        ♡ Hide
-                    </button>
-                </form>
-                {% endif %}
+    {% for post in posts %}
 
-                <form method="POST"
-                      action="{{ url_for('delete_post', post_id=post.id) }}"
-                      onsubmit="return confirm('Are you sure you want to delete this post?');">
+    <div class="post">
 
-                    <button type="submit" class="button delete">
-                        🗑️ Delete
-                    </button>
+        <div class="author">
+            {{ post.author }}
+        </div>
 
-                </form>
+        <div class="date">
+            {{ post.created_at }}
+        </div>
 
-            </div>
+        <div class="body">
+            {{ post.body }}
+        </div>
 
-            {% if post.images %}
-            <div class="images">
+        <!-- STATUS -->
 
-                {% for image in post.images %}
-                    <img src="{{ url_for('uploaded_file', filename=image) }}">
-                {% endfor %}
+        <div class="status {{ post.status }}">
+            {{ post.status|capitalize }}
+        </div>
 
-            </div>
+
+        <!-- ACTION BUTTONS -->
+
+        <div class="actions">
+
+            {% if post.status != "approved" %}
+
+            <form method="POST"
+                  action="{{ url_for('approve_post', post_id=post.id) }}">
+
+                <button type="submit" class="button approve">
+                    ✓ Approve
+                </button>
+
+            </form>
+
             {% endif %}
 
+
+            {% if post.status != "hidden" %}
+
+            <form method="POST"
+                  action="{{ url_for('hide_post', post_id=post.id) }}">
+
+                <button type="submit" class="button hide">
+                    ♡ Hide
+                </button>
+
+            </form>
+
+            {% endif %}
+
+
+            <form method="POST"
+                  action="{{ url_for('delete_post', post_id=post.id) }}"
+                  onsubmit="return confirm('Are you sure you want to delete this post?');">
+
+                <button type="submit" class="button delete">
+                    🗑️ Delete
+                </button>
+
+            </form>
+
         </div>
 
-        {% endfor %}
 
-    {% else %}
+        <!-- IMAGES -->
 
-        <div class="post empty">
-            <h2>No posts yet ♡</h2>
-            <p>When someone shares a memory, it will appear here.</p>
+        {% if post.images %}
+
+        <div class="images">
+
+            {% for image in post.images %}
+
+                <img src="{{ url_for('uploaded_file', filename=image) }}">
+
+            {% endfor %}
+
         </div>
 
-    {% endif %}
+        {% endif %}
+
+    </div>
+
+    {% endfor %}
+
+{% else %}
+
+    <div class="post empty">
+
+        <h2>No posts yet ♡</h2>
+
+        <p>
+            When someone shares a memory,
+            it will appear here.
+        </p>
+
+    </div>
+
+{% endif %}
+```
 
 </div>
 
