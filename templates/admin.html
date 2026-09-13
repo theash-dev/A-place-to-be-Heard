@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - A Place to Be Heard</title>
+
+    <style>
+        body {
+            margin: 0;
+            background: #fff0f5;
+            font-family: Arial, sans-serif;
+            color: #555;
+        }
+
+        header {
+            background: #d99aae;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        .logout {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 15px;
+            background: white;
+            color: #bd7891;
+            text-decoration: none;
+            border-radius: 10px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .post {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(180, 120, 145, 0.15);
+        }
+
+        .author {
+            font-weight: bold;
+            color: #bd7891;
+        }
+
+        .date {
+            font-size: 13px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .body {
+            margin-top: 15px;
+            white-space: pre-wrap;
+        }
+
+        .images {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .images img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+
+        .empty {
+            text-align: center;
+            color: #999;
+            padding: 40px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>♡ Admin Dashboard ♡</h1>
+    <p>A Place to Be Heard</p>
+
+    <a class="logout" href="{{ url_for('admin_logout') }}">
+        Log Out
+    </a>
+</header>
+
+<div class="container">
+
+    {% if posts %}
+
+        {% for post in posts %}
+
+        <div class="post">
+
+            <div class="author">
+                {{ post.author }}
+            </div>
+
+            <div class="date">
+                {{ post.created_at }}
+            </div>
+
+            <div class="body">
+                {{ post.body }}
+            </div>
+
+            {% if post.images %}
+            <div class="images">
+
+                {% for image in post.images %}
+                    <img src="{{ url_for('uploaded_file', filename=image) }}">
+                {% endfor %}
+
+            </div>
+            {% endif %}
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="post empty">
+            <h2>No posts yet ♡</h2>
+            <p>When someone shares a memory, it will appear here.</p>
+        </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>
